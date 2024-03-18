@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VR_Challange", "VR_Challange\VR_Challange.csproj", "{B5B543F7-8759-4E37-A409-5E9F83A1B989}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5B543F7-8759-4E37-A409-5E9F83A1B989}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B543F7-8759-4E37-A409-5E9F83A1B989}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B543F7-8759-4E37-A409-5E9F83A1B989}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B543F7-8759-4E37-A409-5E9F83A1B989}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C335215B-D099-46D9-9D37-1766D5D3E854}
+	EndGlobalSection
+EndGlobal
