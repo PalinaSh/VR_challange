@@ -2,10 +2,10 @@
 {
     public class Content
     {
-        public string PoNumber { get; set; }
-
-        public string Isbn { get; set; }
+        public string Id { get; set; } // ISBN
 
         public int Quantity { get; set; }
+
+        public string PoNumber { get; set; }
     }
 }

@@ -2,9 +2,9 @@
 {
     public sealed class Box
     {
-        public string SupplierIdentifier { get; set; }
+        public string Id { get; set; }
 
-        public string Identifier { get; set; }
+        public string SupplierIdentifier { get; set; }
 
         public IReadOnlyCollection<Content> Contents { get; set; }
     }
