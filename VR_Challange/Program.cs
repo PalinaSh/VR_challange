@@ -21,7 +21,7 @@ async Task ReadFile(string path)
     const string BoxKeyWord = "HDR";
     const string ContentKeyWord = "LINE";
 
-    var newFileContent = await File.ReadAllTextAsync(path);
+    var newFileContent = await File.ReadAllTextAsync(path); // This code is vulnerable because the file may be so large that it will not fit in RAM. We can read file partially.
     var lines = newFileContent.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
     Box box = null;
@@ -54,7 +54,7 @@ async Task ReadFile(string path)
         }
     }
 
-    await SaveBox(box);
+    await SaveBox(box); // Also we can save boxes to the database not one at a time, but several at a time
 }
 
 async Task SaveBox(Box box)

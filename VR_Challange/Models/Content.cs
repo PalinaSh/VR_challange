@@ -8,6 +8,7 @@
 
         public int Quantity { get; init; }
 
-        public string PoNumber { get; init; }
+        public string PoNumber { get; init; } // If PO Number is always the same for entire Box then this property can be moved to Box class,
+                                              // then there would be less similar data in Contents table.
     }
 }
