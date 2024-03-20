@@ -21,40 +21,52 @@ async Task ReadFile(string path)
     const string BoxKeyWord = "HDR";
     const string ContentKeyWord = "LINE";
 
-    var newFileContent = await File.ReadAllTextAsync(path); // This code is vulnerable because the file may be so large that it will not fit in RAM. We can read file partially.
-    var lines = newFileContent.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+    if (!File.Exists(path))
+        return;
 
     Box box = null;
 
-    foreach (var line in lines)
+    try
     {
-        var columns = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        using var reader = new StreamReader(fileStream);
 
-        if (columns.Length == 3 && BoxKeyWord.Equals(columns[0], StringComparison.InvariantCultureIgnoreCase))
+        while (reader.Peek() >= 0)
         {
-            await SaveBox(box);
+            var line = await reader.ReadLineAsync();
 
-            box = new()
-            {
-                Id = columns[2],
-                SupplierIdentifier = columns[1],
-            };
-        }
-        else if (box is not null && columns.Length == 4 && ContentKeyWord.Equals(columns[0], StringComparison.InvariantCultureIgnoreCase))
-        {
-            var content = new Content()
-            {
-                Id = Guid.NewGuid(),
-                ISBN = columns[2],
-                PoNumber = columns[1],
-                Quantity = int.TryParse(columns[3], out var quantity) ? quantity : default,
-            };
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
 
-            box.Contents.Add(content);
+            var columns = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (columns.Length == 3 && BoxKeyWord.Equals(columns[0], StringComparison.InvariantCultureIgnoreCase))
+            {
+                await SaveBox(box);
+
+                box = new()
+                {
+                    Id = columns[2],
+                    SupplierIdentifier = columns[1],
+                };
+            }
+            else if (box is not null && columns.Length == 4 && ContentKeyWord.Equals(columns[0], StringComparison.InvariantCultureIgnoreCase))
+            {
+                var content = new Content()
+                {
+                    Id = Guid.NewGuid(),
+                    ISBN = columns[2],
+                    PoNumber = columns[1],
+                    Quantity = int.TryParse(columns[3], out var quantity) ? quantity : default,
+                };
+
+                box.Contents.Add(content);
+            }
         }
     }
+    catch { /* Log an exception */ }
 
-    await SaveBox(box); // Also we can save boxes to the database not one at a time, but several at a time
+    await SaveBox(box); // Also we can save boxes to the database not one at a time, but several at a time.
 }
 
 async Task SaveBox(Box box)
@@ -68,6 +80,6 @@ async Task SaveBox(Box box)
             await dbContext.AddAsync(box);
             await dbContext.SaveChangesAsync();
         }
-        catch { }
+        catch { /* Log an exception */ }
     }
 }
