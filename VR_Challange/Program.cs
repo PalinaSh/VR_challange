@@ -10,6 +10,7 @@ using var watcher = new FileSystemWatcher(@"D:\repos\VR_Challange_Data") // Path
 
 watcher.Created += FileCreated; // The event occurs each time a file is dropped into the watched folder.
                                 // If we need to monitor other events (like file changing), we can add a new event handler to the watcher.
+                                // Also if dropped files have the same names we should have the code that remove file after reading it.
 
 Console.ReadLine();
 
@@ -52,15 +53,9 @@ async Task ReadFile(string path)
             }
             else if (box is not null && columns.Length == 4 && ContentKeyWord.Equals(columns[0], StringComparison.InvariantCultureIgnoreCase))
             {
-                var content = new Content()
-                {
-                    Id = Guid.NewGuid(),
-                    ISBN = columns[2],
-                    PoNumber = columns[1],
-                    Quantity = int.TryParse(columns[3], out var quantity) ? quantity : default,
-                };
-
-                box.Contents.Add(content);
+                if (TryGetContent(columns, out var content)) // Maybe if some fields are not valid, this line shouldn't be added to DB?
+                                                             // Or we can change invalid properties by default values and add this content to DB.
+                    box.Contents.Add(content);
             }
         }
     }
@@ -82,4 +77,28 @@ async Task SaveBox(Box box)
         }
         catch { /* Log an exception */ }
     }
+}
+
+bool TryGetContent(string[] columns, out Content content)
+{
+    const int IsbnLength = 13;
+
+    content = null;
+
+    if (!int.TryParse(columns[3], out var quantity))
+        return false;
+
+    var isbn = columns[2];
+    if (isbn.Length != IsbnLength)
+        return false;
+
+    content = new Content()
+    {
+        Id = Guid.NewGuid(),
+        PoNumber = columns[1],
+        Quantity = quantity,
+        ISBN = isbn,
+    };
+
+    return true;
 }
